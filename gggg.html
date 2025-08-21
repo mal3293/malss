@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Kevin Commerce</title>
+<meta name="theme-color" content="#0b0b0b" />
+<style>
+  :root { --bg:#0b0b0b; --fg:#f5f5f5; --card:#1a1a1a; --muted:#999; --accent:#6366f1; --line:#2a2a2a; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
+  header{padding:16px;background:#121212;border-bottom:1px solid var(--line)}
+  header nav a{color:#a5b4fc;margin-right:10px;text-decoration:none}
+  h1,h2{margin:.5rem 0}
+  main{padding:16px;max-width:960px;margin:0 auto}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+  .card{background:var(--card);border:1px solid var(--line);padding:12px;border-radius:12px}
+  .card img{width:100%;border-radius:8px}
+  .price{font-weight:700}
+  .btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;padding:.55rem 1rem;border-radius:10px}
+  footer{padding:16px;text-align:center;color:var(--muted);border-top:1px solid var(--line)}
+  .notice{color:var(--muted);font-size:.95rem}
+</style>
+</head>
+<body>
+<header>
+  <nav>
+    <a href="#home">Home</a> |
+    <a href="#products">Merch</a> |
+    <a href="#videos">Training</a>
+  </nav>
+  <h1>Kevin Commerce</h1>
+</header>
+
+<main id="app"></main>
+
+<footer>© <span id="y"></span> Kevin Commerce</footer>
+
+<script>
+  const products = [
+    { id:"tee1", title:"Kevin Fight Tee", price:25.00, img:"https://placehold.co/600x600?text=Fight+Tee" },
+    { id:"hood1", title:"Signature Hoodie", price:45.00, img:"https://placehold.co/600x600?text=Hoodie" }
+  ];
+  const videos = [
+    { id:"vid1", title:"MMA Speed Drills Vol.1 (30 min)", price:9.00 },
+    { id:"vid2", title:"Explosive Footwork Session", price:7.00 }
+  ];
+  const $ = sel => document.querySelector(sel);
+  const app = $('#app');
+  $('#y').textContent = new Date().getFullYear();
+
+  function shell(title, body) {
+    return `<section><h2>${title}</h2>${body}</section>`;
+  }
+  function homeView(){
+    const merch = products.map(p=>`
+      <div class="card">
+        <img src="${p.img}" alt="${p.title}">
+        <h3>${p.title}</h3>
+        <p class="price">$${p.price.toFixed(2)}</p>
+        <a class="btn" href="mailto:orders@example.com?subject=Buy ${encodeURIComponent(p.title)}">Buy</a>
+      </div>`).join('');
+    const vids = videos.map(v=>`<li><strong>${v.title}</strong> — $${v.price.toFixed(2)}</li>`).join('');
+    return shell('Featured Merch', `<div class="grid">${merch}</div><h2 id="videos">Training Videos</h2><ul>${vids}</ul><p class="notice">(We’ll add real checkout later—this proves you’re live.)</p>`);
+  }
+  function productsView(){
+    const cards = products.map(p=>`
+      <div class="card">
+        <img src="${p.img}" alt="${p.title}">
+        <h3>${p.title}</h3>
+        <p class="price">$${p.price.toFixed(2)}</p>
+        <a class="btn" href="mailto:orders@example.com?subject=Buy ${encodeURIComponent(p.title)}">Buy</a>
+      </div>`).join('');
+    return shell('Merch', `<div class="grid">${cards}</div>`);
+  }
+  function videosView(){
+    const list = videos.map(v=>`
+      <li><strong>${v.title}</strong> — $${v.price.toFixed(2)} 
+        <a class="btn" href="mailto:orders@example.com?subject=Request Video ${encodeURIComponent(v.title)}" style="margin-left:.5rem">Request Access</a>
+      </li>`).join('');
+    return shell('Training Videos', `<ul>${list}</ul>`);
+  }
+  function render(){
+    const hash = location.hash || '#home';
+    if (hash.startsWith('#products')) app.innerHTML = productsView();
+    else if (hash.startsWith('#videos')) app.innerHTML = videosView();
+    else app.innerHTML = homeView();
+  }
+  window.addEventListener('hashchange', render);
+  render();
+</script>
+</body>
+</html>
